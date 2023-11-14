@@ -3,13 +3,16 @@ async function getRandomContent() {
             // Fetch both the random quote and cat gif concurrently using async/await
             const [quoteResponse, catGifResponse] = await Promise.all([
                 fetch('https://api.quotable.io/random'),
-                fetch('https://cataas.com/cat/gif')
+                fetch('https://api.thecatapi.com/v1/images/search?mime_types=gif')
             ]);
 
-            const [quoteData, catGifUrl] = await Promise.all([
+            const [quoteData, catGifData] = await Promise.all([
                 quoteResponse.json(),
-                catGifResponse.url
+                catGifResponse.json()
             ]);
+
+            // Extract the URL of the cat gif from the catGifData
+            const catGifUrl = catGifData[0].url;
 
             // Display the quote and cat gif on the webpage
             displayContent(quoteData, catGifUrl);
