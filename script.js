@@ -10,9 +10,14 @@ async function getRandomContent() {
         const data = await response.json();
 
         console.log('API Response:', data);
-
-        const gifUrl = data.data.image_original_url;
-        displayContent(gifUrl);
+        
+        // Check if the data contains a 'data' property with a 'url' property
+        if (data && data.data && data.data.url) {
+            const gifUrl = data.data.url;
+            displayContent(gifUrl);
+        } else {
+            console.error('Invalid API response:', data);
+        }
     } catch (error) {
         console.error('Error fetching content:', error);
     }
