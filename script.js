@@ -1,36 +1,42 @@
 async function getRandomContent() {
-    try {
-        const randomChoice = Math.random() < 0.5 ? 'fish' : 'Colombia';
-        const apiKey = 'pvyh7KDSwxvDlDN5oG6USLvuLrNj5ZSG';
-        const apiUrl = `https://api.giphy.com/v1/gifs/random?api_key=${apiKey}&tag=${randomChoice}`;
+        try {
+            // Fetch both the random quote and cat gif concurrently using async/await
+            const [quoteResponse, catGifResponse] = await Promise.all([
+                fetch('https://api.quotable.io/random'),
+                fetch('https://api.thecatapi.com/v1/images/search?mime_types=gif')
+            ]);
 
-        console.log('API URL:', apiUrl);
+            const [quoteData, catGifData] = await Promise.all([
+                quoteResponse.json(),
+                catGifResponse.json()
+            ]);
 
-        const response = await fetch(apiUrl);
-        const data = await response.json();
+            // Extract the URL of the cat gif from the catGifData
+            const catGifUrl = catGifData[0].url;
 
-        console.log('API Response:', data);
-        
-        // Check if the data contains a 'data' property with a 'url' property
-        if (data && data.data && data.data.url) {
-            const gifUrl = data.data.url;
-            displayContent(gifUrl);
-        } else {
-            console.error('Invalid API response:', data);
+            // Display the quote and cat gif on the webpage
+            displayContent(quoteData, catGifUrl);
+        } catch (error) {
+            console.error('Error fetching content:', error);
         }
-    } catch (error) {
-        console.error('Error fetching content:', error);
     }
-}
 
+    function displayContent(quote, catGifUrl) {
+        // Display the quote
+        const quoteContainer = document.getElementById('quote-container');
+        quoteContainer.innerHTML = '';
+        const quoteText = document.createElement('p');
+        quoteText.textContent = `"${quote.content}"`;
+        const quoteAuthor = document.createElement('p');
+        quoteAuthor.textContent = `- ${quote.author}`;
+        quoteContainer.appendChild(quoteText);
+        quoteContainer.appendChild(quoteAuthor);
 
-function displayContent(gifUrl) {
-    // Display the gif
-    const gifContainer = document.getElementById('gif-container');
-    gifContainer.innerHTML = '';
-    const gifImage = document.createElement('img');
-    gifImage.src = gifUrl;
-    gifImage.alt = 'Random Gif';
-    gifContainer.appendChild(gifImage);
-}
-
+        // Display the cat gif
+        const catContainer = document.getElementById('cat-container');
+        catContainer.innerHTML = '';
+        const catImage = document.createElement('img');
+        catImage.src = catGifUrl;
+        catImage.alt = 'Random Cat Gif';
+        catContainer.appendChild(catImage);
+    }
