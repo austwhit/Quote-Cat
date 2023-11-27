@@ -17,3 +17,7 @@ body {
     max-width: 300px;
     margin: auto;
 }
+
+.button {
+    margin: 10px;
+}
