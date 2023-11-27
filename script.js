@@ -1,4 +1,4 @@
-const TENOR_API_KEY = 'YOUR_TENOR_API_KEY';
+const TENOR_API_KEY = AIzaSyBkfyMJydrJ7_NUWHeb-3_u2YBRyeS2NeE;
 
 async function getRandomContent() {
     try {
